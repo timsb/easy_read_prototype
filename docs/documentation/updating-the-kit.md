@@ -1,177 +1,81 @@
-# Updating the kit
+# Updating your Prototype Kit
 
-## Updating
+How to to update your prototype and get help from the GOV.UK Prototype Kit team.
 
-**Important note**
+## Get help
 
-If you have made any changes outside the `app` folder, this process will destroy those changes. We will try and improve the update process to avoid this, but in the meantime you will need to make a note of your changes outside `app`, and add them back after updating.
+If you have a question or need help with updating the Prototype Kit, you can:
 
-### Steps
+- email govuk-design-system-support@digital.cabinet-office.gov.uk
+- get in touch on the [Prototype Kit's channel on cross-government Slack](https://ukgovernmentdigital.slack.com/messages/prototype-kit/)
 
-Download the latest prototype kit zip file from GitHub
+Tell us as much as you can about the issue you're having, and the computer and operating system you're using.
 
-In your project, delete everything apart from the `app` and `.git` folder
+## Updating to the latest version
 
-Copy everything from the latest kit to your project, apart from the `app` folder. 
+1. [Download the zip file of the latest version of the Prototype Kit](/docs/download).
 
-Copy the config.js file from the `app` folder in the latest kit to the `app` folder of your prototype. If you've made any changes to the config.js file in your prototype then you'll need to re-enter them in the new version of the file e.g. the service name.
+2. Unzip the zip file. It will make a folder called `govuk-prototype-kit`, with a version number.
 
-Check `\app\assets\sass\patterns` in the latest kit for any new patterns. Copy the files over to your prototype.
+3. Make a backup copy of your prototype folder.
 
-Check `\app\assets\sass\application.scss` in the latest kit to see if any changes have been made in the top section, above where it says `// Add extra styles here`. Copy anything new from that file to the version in your prototype, making sure you don't overwrite any extra styles you have added yourself.
+4. You’ll need to copy some files that operating systems do not usually show. These hidden files usually start with a `.` and are known as ‘dot files’. You can:
+    - [show hidden files in Windows](https://support.microsoft.com/en-us/windows/view-hidden-files-and-folders-in-windows-97fbc472-c603-9d90-91d0-1166d1d9f4b5)
+    - show hidden files on MacOS by pressing command + shift + . in Finder 
 
----
+5. In your prototype folder, delete everything except the `app` and `.git` folders.
 
-## Updating via the command line (Advanced)
+6. Copy all the files and folders except the `app` folder from the `govuk-prototype-kit` folder to your prototype.
 
-If you have experience with the command line and your prototype is running within a git source repository then you can choose to update the kit with a series of commands.
+7. Replace the `app/config.js` file in your prototype with the `app/config.js` file from the `govuk-prototype-kit` folder.
 
-Updating via the command line involves fetching the latest code from the 'upstream' remote repository and then merging it into the git branch that contains your version of the prototyping kit. Below are the steps for doing that in detail.
+8. Compare your new `config.js` file to the `config.js` file in the backup you made in step 3, and copy over anything you need to from the backup - for example your service name.
 
-### Steps
+9. Copy `app/assets/sass/patterns` from the `govuk-prototype-kit` folder to your prototype.
 
-#### View git remote(s)
+10. Open the `app/assets/sass/application.scss` file in the `govuk-prototype-kit` folder.
 
-Firstly change to the base directory of your prototyping kit in terminal, for example:
+11. Copy everything down to `// Add extra styles here`, then paste it into the `app/assets/sass/application.scss` file in your prototype so it replaces everything above `// Add extra styles here`.
 
-```
-cd ~/sites/govuk_prototype_kit
-```
+12. Save the updated `app/assets/sass/application.scss` file in your prototype.
 
-Once in the directory start by listing the git remote(s) you have referenced from your machine. To do this you type:
+13. Check the [latest Prototype Kit release note](https://github.com/alphagov/govuk-prototype-kit/releases/latest) and follow any guidance on updating your prototype.
 
- ```git remote -v``` and hit enter
+    If your prototype has not been updated for a long time, you should also follow any guidance in [release notes](https://github.com/alphagov/govuk-prototype-kit/releases) between the version you're updating from and the latest version. You can find out the version you're updating from in the `VERSION.txt` file in your backup folder.
 
-This will typically output a list of all the remote git repositories that have the prototype code, for example:
+14. In your [terminal](/docs/install/requirements.md#terminal), `cd` to your prototype folder.
 
-```
-origin  https://github.com/paulmsmith/govuk_prototype_kit.git (fetch)
-origin  https://github.com/paulmsmith/govuk_prototype_kit.git (push)
-```
+15. Run `npm install`.
 
-So long as you can see a list of repositories as above, we can move on to adding a reference to the original 'alphagov' repository which we will need in order to update.
+    This may take up to a minute. You can ignore any lines in the log that start with `WARN`.
 
-#### Adding the upstream remote repository
+16. [Run the kit and check it works](/docs/install/run-the-kit).
 
-To add the alphagov remote repository, type the following command and hit enter:
+### If your prototype does not work
 
-```
-git remote add upstream https://github.com/alphagov/govuk_prototype_kit.git
-```
+If your prototype does not work, compare the new `package.json` file to the `package.json` file in the backup you made in step 3. 
 
-All being well, you will just return to a command prompt, now if you type:
-```git remote -v```
+Run `npm install PACKAGE-NAME` for each package that's missing in the new file.
 
-You should see an 'upstream' in your list, for example:
+## Gulp error message
 
-```
-origin	https://github.com/paulmsmith/govuk_prototype_kit.git (fetch)
-origin	https://github.com/paulmsmith/govuk_prototype_kit.git (push)
-upstream	https://github.com/alphagov/govuk_prototype_kit.git (fetch)
-upstream	https://github.com/alphagov/govuk_prototype_kit.git (push)
-```
+If you use a GDS managed device, you no longer have permission to run Gulp (a JavaScript toolkit used by Prototype Kit). We’ve updated the Prototype Kit so if you install it now, it runs Gulp without having to install it separately.
 
-#### Merging from upstream
+If you want to run an existing prototype made before July 2021, you may see an error message about not having permission to run Gulp.
 
-Now that you've added the upstream remote, you can merge the latest code into yours with the following commands.
+To fix this:
 
-First you will 'fetch' the latest code from the upstream latest-release branch. Type the following command and wait a few seconds.
+1. open a code editor, like Atom
+2. from your prototype project folder, open the ‘start.js’ file
+3. go to the line that starts with: `var gulp = spawn`
+4. replace the entire line with:
 
-```
-git fetch upstream latest-release
-```
+`var gulp = spawn ('node', ['./node_modules/gulp/bin/gulp.js', '--log-level', '-L'])`
 
-You will see it output a few lines telling you that was successful, for example:
+5. save the file
 
-```
-From https://github.com/alphagov/govuk_prototype_kit
- * branch            latest-release    -> FETCH_HEAD
-```
+If you need to restart the Prototype Kit after the fix:
 
-Next, we will merge the branch we just 'fetched' into our master branch (note: you can substitute 'master' for the branch you want to merge into if different)
+1. in your [terminal](https://govuk-prototype-kit.herokuapp.com/docs/install/requirements.md#terminal), `cd` to your prototype folder
+2. run `npm start`
 
-```
-git checkout master && git merge FETCH_HEAD
-```
-
-You shouldn't have any merge conflicts if you've not changed files outside of the 'app' folder. If you do, there are plenty of ways to fix the conflicts and [github has instructions](https://help.github.com/articles/resolving-a-merge-conflict-from-the-command-line/) that should be easy to follow if you need a refresher course.
-
-Check that the application starts. In terminal or command prompt type:
-
-```
-npm start
-```
-
-After the kit has started, you should see a message telling you that the kit is running:
-
-```
-Listening on port 3000 url: http://localhost:3000
-```
-
-If you see an error after updating, you may need to download extra code used by the kit before it can run.
-
-You can get this by running:
-
-```
-npm install
-```
-
-The install may take up to a minute. Whilst installing it may WARN about some items - this is ok. As long as there are no ERRORs you can continue.
-
-In terminal:
-
-```
-npm start
-```
-
-If you still have an error, you can [raise an issue within github](https://github.com/alphagov/govuk_prototype_kit/issues) or ask in the [Slack channel for users of the prototype kit](https://ukgovernmentdigital.slack.com/messages/prototype-kit/) by providing as much information as you can about the error and the computer you are attempting to run the prototyping kit on.
-
----
-
-## Converting old prototypes
-
-Earlier versions of the prototype kit used a different templating language called Mustache.
-
-Converting Mustache templates to Nunjucks ones is relatively simple. Here are the main things you'll need to do:
-
-### Template inheritance
-
-    {{<layout}}
-
-    {{/layout}}
-
-Becomes…
-
-    {% extends "layout.html" %}
-
-### Template blocks
-
-    {{$pageTitle}}
-        GOV.UK prototype kit
-    {{/pageTitle}}
-
-Becomes…
-
-    {% block page_title %}
-        GOV.UK prototype kit
-    {% endblock %}
-
-and
-
-    {{$content}}
-    .......
-    {{/content}}
-
-Becomes...
-
-    {% block content %}
-    ........
-    {% endblock %}
-
-### Includes
-
-    {{>includes/breadcrumbs}}
-
-Becomes…
-
-    {% include "includes/breadcrumbs.html" %}
